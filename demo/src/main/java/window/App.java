@@ -37,7 +37,7 @@ public class App extends Application {
         graphicsPane = new Pane();
         graphicsScene = new Scene(graphicsPane, 640, 480);
         graphicsWindow = new GraphicsWindow(this, graphicsPane);
-        graphicsWindow.drawNetworkCircles();
+        graphicsWindow.drawNodeCircles();
         graphicsStage.setTitle("Raft Concensus Algorithm Visualisation");
         graphicsStage.setResizable(false);
         graphicsStage.setScene(graphicsScene);
@@ -67,6 +67,11 @@ public class App extends Application {
         for (TranslateTransition tt : ballsMoving) {
             tt.play();
         }
+    }
+
+    public void sendCommand(String command) {
+        ClientNode clientNode = network.getClientNode();
+        clientNode.getCommandText(command);
     }
 
     public Log getNodeLog(Integer id) {

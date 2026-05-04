@@ -7,8 +7,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
@@ -32,8 +34,8 @@ public class DataWindow {
 
     public void drawNodeData() {
 
-        Button button = new Button("Start/Stop animation");
-        button.setOnAction(new EventHandler<ActionEvent>() {
+        Button startStopButton = new Button("Start/Stop animation");
+        startStopButton.setOnAction(new EventHandler<ActionEvent>() {
             Boolean pressed = false;
             @Override
             public void handle(ActionEvent event) {
@@ -46,8 +48,25 @@ public class DataWindow {
                 }
             }
         });
-        button.setTranslateX(640 - 130); //Button.getWidth returns 0 so need to hard code it
-        pane.getChildren().add(button);
+        startStopButton.setTranslateX(640 - 130); //Button.getWidth returns 0 so need to hard code it
+        pane.getChildren().add(startStopButton);
+
+        TextField textField = new TextField("Enter command here");
+        textField.setTranslateX(640 - 130);
+        textField.setTranslateY(30);
+        pane.getChildren().add(textField);
+        
+        Button commandButton = new Button("Send command!");
+        commandButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                app.sendCommand(textField.getCharacters().toString());
+            }
+        });
+        commandButton.setTranslateX(640 - 115);
+        commandButton.setTranslateY(60);
+        pane.getChildren().add(commandButton);
+
 
         for (Integer i = 1; i <= 5; i++) {
             drawNodeID(i);

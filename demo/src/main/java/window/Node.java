@@ -150,7 +150,7 @@ public class Node implements Runnable {
     private void updateLeader(Message message) {
         leader = message.getSenderID();
         updateLog(message.getLog());;
-        commitLastEntry();
+        //commitLastEntry();
         System.out.println("Node " + ID + " sees node " + leader + " as leader");
     }
 

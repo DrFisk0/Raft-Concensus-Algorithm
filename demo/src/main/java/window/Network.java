@@ -13,6 +13,7 @@ public class Network {
     private App app; //The app the network will be visualised on
     private Integer totalTime; //The total amount of time that has gone by in the simulation 
     private Set<Node> nodes; //The nodes in the network
+    private ClientNode clientNode;
     private NetworkTimer netTimer; //The speed at which the simulation runs
     private Map<Integer, Set<Message>> messagesInFlight; //Map that holds the messages that are begin send, MessageID is the key with the Message(s) being the value
     private Integer timerTickRate; //The rate of which timers tick in the two timer classes
@@ -26,13 +27,17 @@ public class Network {
         this.nodes = createNodes();
         this.netTimer = new NetworkTimer(this);
         this.messagesInFlight = new HashMap<Integer, Set<Message>>();
-        createClientNode();
+        this.clientNode = createClientNode();
     }
 
     private ClientNode createClientNode() { //Makes the client node for the network
         ClientNode clientNode = new ClientNode(this);
         Thread thread = new Thread(clientNode);
         thread.start();
+        return clientNode;
+    }
+
+    public ClientNode getClientNode() {
         return clientNode;
     }
 
@@ -104,7 +109,8 @@ public class Network {
         } else { //The message is a client message
             Node leader = getLeader();
             if (leader != null) { //Check to see if concensus on leader has been reached
-                leader.reciveMessage(message);
+                message.setReciverID(leader.getNodeID());
+                sendMessage(message, getTotalTime() + getDelay());
             } else {
                 System.out.println("Couldn't get concensus on leader");   
             }   

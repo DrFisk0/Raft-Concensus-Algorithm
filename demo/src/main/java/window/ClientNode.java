@@ -105,15 +105,9 @@ public class ClientNode implements Runnable {
         System.out.println("To exit the program, type [exit]");
     }
 
-    private void getCommandText(String command) {
-        if (command.startsWith("com: ")) {
-            command = command.substring(5);
-            //System.out.println("[" + command + "]");
-            Message message = new Message(MessageType.CLIENT, command);
-            network.sendMessage(message);
-        } else {
-            badCommand(command);
-        }
+    public void getCommandText(String command) {
+        Message message = new Message(-1, MessageType.CLIENT, command);
+        network.sendMessage(message);
     }
 
     public void run() {
