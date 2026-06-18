@@ -11,7 +11,6 @@ import javafx.application.Platform;
 
 public class Network {
     private App app; //The app the network will be visualised on
-    private Integer totalTime; //The total amount of time that has gone by in the simulation 
     private Set<Node> nodes; //The nodes in the network
     private ClientNode clientNode;
     private NetworkTimer netTimer; //The speed at which the simulation runs
@@ -21,7 +20,6 @@ public class Network {
 
     public Network(App app) {
         this.app = app;
-        this.totalTime = 0;
         this.running = false; 
         this.timerTickRate = 100;
         this.nodes = createNodes();
@@ -186,12 +184,8 @@ public class Network {
         }
     }
 
-    public void addToTimer(int extraTime) {
-        totalTime = totalTime + extraTime;
-    }
-
-    public synchronized int getTotalTime() {
-        return totalTime;
+    public synchronized Integer getTotalTime() {
+        return netTimer.getTotalTime();
     }
 
 
