@@ -58,7 +58,7 @@ public class ClientNode implements Runnable {
     private void getPrintCommand(String command) {
         if (command.equals("print all logs")) {
             System.out.println("Printing all logs");
-            network.printNodeLogs();
+            //network.printNodeLogs();
         }
     }
 
