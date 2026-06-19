@@ -177,7 +177,7 @@ public class Node implements Runnable {
                 //printlog();
                 break;
             case HEARTBEAT:
-                if (higherTerm(message)) {
+                if (!log.sameLog(message.getLog())) {
                     term = message.getTerm();
                     leader = message.getSenderID();
                     updateLog(message.getLog());
@@ -323,6 +323,7 @@ public class Node implements Runnable {
             if (hasMessage() && shouldAct()) { //Check that we are still online
                 Message currMessage = getMessage();
                 proccesMessage(currMessage);
+                waitStart = network.getTotalTime();
             }
         }
         if (shouldAct() && state == NodeState.LEADER) { sendHeartbeatMessage(); } //Need to make sure we're still online
