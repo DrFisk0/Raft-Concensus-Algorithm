@@ -11,7 +11,7 @@ import javafx.application.Platform;
 
 public class Network {
     private App app; //The app the network will be visualised on
-    private Set<Node> nodes; //The nodes in the network
+    private Map<Integer, Node> nodes; //The nodes in the network
     private ClientNode clientNode;
     private NetworkTimer netTimer; //The speed at which the simulation runs
     private Map<Integer, Set<Message>> messagesInFlight; //Map that holds the messages that are begin send, MessageID is the key with the Message(s) being the value
@@ -42,7 +42,7 @@ public class Network {
     private Node getLeader() {
         Set<Integer> responses = new HashSet<>();
 
-        for (Node node : nodes) { //For loop to see if all the nodes agree on who the leader is
+        for (Node node : getNodes()) { //For loop to see if all the nodes agree on who the leader is
             if (node.getState() != NodeState.OFFLINE) { //We need to check only online nodes as an offline node could have out of date info
                 responses.add(node.getLeader());
             }
@@ -77,11 +77,11 @@ public class Network {
 
     public int getTickRate() { return timerTickRate; }
 
-    private Set<Node> createNodes() { //Creates and starts the nodes in the network
-        Set<Node> newNodes = new HashSet<Node>();
+    private Map<Integer, Node> createNodes() { //Creates and starts the nodes in the network
+        Map<Integer, Node> newNodes = new HashMap<Integer, Node>();
         for (int i = 1; i <= 5; i++) {
             Node tempNode = new Node(i, this);
-            newNodes.add(tempNode);
+            newNodes.put(i, tempNode);
             Thread tempThread = new Thread(tempNode);
             tempThread.start();
         }
@@ -164,22 +164,21 @@ public class Network {
     }
 
     public synchronized Node getNode(int targetNodeID) {
-        //Nodes have id's from 0-4
-        Node returnNode = null;
-        for (Node node : nodes) {
-            if (node.getNodeID() == targetNodeID) {
-                returnNode = node;
-            }
-        }
-        return returnNode;
+        return nodes.get(targetNodeID);
     }
 
     public Set<Node> getNodes() {
-        return nodes;
+        Set<Node> returnNodes = new HashSet<Node>();
+
+        for (int i = 1; i <= 5; i++) {
+            returnNodes.add(getNode(i));
+        }
+
+        return returnNodes;
     }
 
     public void printNodeLogs() {
-        for (Node node : nodes) {
+        for (Node node : getNodes()) {
             node.printlog();
         }
     }
@@ -202,7 +201,7 @@ public class Network {
     public void hasConcensus() {
         Boolean concensus = true;
         Log comparisonLog = null;
-        for (Node node : nodes) {
+        for (Node node : getNodes()) {
             if (node.getState() != NodeState.OFFLINE) {
                 if (comparisonLog != null) {
                     if (!node.getLog().sameLog(comparisonLog)) {
