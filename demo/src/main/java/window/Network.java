@@ -119,14 +119,14 @@ public class Network {
         Set<Message> newSet = new HashSet<>();
         
         newSet.add(message);
-            if (messagesInFlight.containsKey(delay)) {
-                for (Message currMessage : messagesInFlight.remove(delay)) {
-                    newSet.add(currMessage);
-                }
+        if (messagesInFlight.containsKey(delay)) {
+            for (Message currMessage : messagesInFlight.remove(delay)) {
+                newSet.add(currMessage);
             }
-            messagesInFlight.put(delay, newSet);
-            netTimer.addAlarm(delay);
-            //System.out.println("Send message");
+        }
+        messagesInFlight.put(delay, newSet);
+        netTimer.addAlarm(delay);
+        //System.out.println("Send message");
     }
 
     public void ping(int alarmTime) { //Ping the network for when message(s) needs to be send
@@ -136,9 +136,15 @@ public class Network {
     }
 
     private void deliverMessage(Message message) { //Gives the message to the node it was send to
+        System.out.println("Delivering message " + message);
         int reciverID = message.getReciverID();
-        Node tempNode = getNode(reciverID);
-        tempNode.reciveMessage(message);
+        if (reciverID == -1) {
+            ClientNode client = getClientNode();
+            client.reciveMessage(message);
+        } else {
+            Node tempNode = getNode(reciverID);
+            tempNode.reciveMessage(message);
+        }
     }
 
     public int getRandNum(int min, int max) {

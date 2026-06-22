@@ -11,9 +11,9 @@ public class Message {
     private Log log;            //The log given to the message
     private String command;     //The command in the message, only used by client node
 
-    public Message(Integer senderID, MessageType type, String command) { //Client node uses this constructor
+    public Message(Integer senderID, Integer reciverID, MessageType type, String command) { //Client node uses this constructor
         this.senderID = senderID;
-        this.reciverID = null;
+        this.reciverID = reciverID;
         this.type = type;
         this.log = null;
         this.command = command;

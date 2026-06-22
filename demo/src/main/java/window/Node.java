@@ -122,12 +122,12 @@ public class Node implements Runnable {
                 }
             }
             if (votes >= requiredVotes) { // Election was a succsess!
-            electionOnGoing = false;
-            leader = ID;
-            changeState(NodeState.LEADER);
-            sendElectionSuccesMessage();
-            commitLastEntry();
-            System.out.println("Node " + ID + " won the election");
+                electionOnGoing = false;
+                leader = ID;
+                changeState(NodeState.LEADER);
+                sendElectionSuccesMessage();
+                commitLastEntry();
+                System.out.println("Node " + ID + " won the election");
             } else if (waitedTooLong(electionStart, timeout)) {
                 //System.out.println("Node " + ID + " has started a second election");
                 electionOnGoing = false;
@@ -145,6 +145,8 @@ public class Node implements Runnable {
                 network.sendMessage(message);
             }
         }
+        Message message = new Message(ID, -1, MessageType.ELECTIONSUCCES, log);
+        network.sendMessage(message);
     }
 
     private void updateLeader(Message message) {
@@ -238,6 +240,7 @@ public class Node implements Runnable {
         Integer nodesReady = 1; //Vote for itself
         Integer requiredReady = (network.getNodes().size() / 2) + 1; //Only works with uneven number of nodes.
         Boolean interupted = false;
+        Integer waitStart = network.getTotalTime();
 
         while (nodesReady <= requiredReady && !interupted) {
             if (hasMessage()) {
@@ -249,6 +252,17 @@ public class Node implements Runnable {
                     proccesMessage(response);
                 }
             }
+
+            if (waitedTooLong(waitStart, timeout / 5)) {
+                for (Node node : network.getNodes()) {
+                    if (ID != node.ID) {
+                        Message tempmessage = new Message(ID, node.ID, MessageType.GETREADY, tempLog);
+                        network.sendMessage(tempmessage);
+                    }
+                }
+                waitStart = network.getTotalTime();
+            }
+
         }
         if (nodesReady >= requiredReady) { //Half or more of all nodes are ready to commit
             sendCommit();
@@ -264,6 +278,8 @@ public class Node implements Runnable {
                 network.sendMessage(message);
             }
         }
+        Message message = new Message(ID, -1, MessageType.COMMIT, log);
+        network.sendMessage(message);
     }
 
     private Boolean waitedTooLong(Integer startWait, Integer deadline) {

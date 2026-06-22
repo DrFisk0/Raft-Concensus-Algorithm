@@ -16,7 +16,7 @@ public class GraphicsWindow {
     private App app;
     private Pane pane;
     private Map<Integer, Circle> nodeCircles;
-    private Map<Integer, Pair<Integer,Integer>> networkNodesCords;
+    private Map<Integer, Pair<Integer,Integer>> NodesCords;
     private Pair<Integer, Integer> clientNodePos;
 
     GraphicsWindow(App app, Pane pane) {
@@ -24,12 +24,13 @@ public class GraphicsWindow {
         this.pane = pane;
         this.clientNodePos = new Pair<Integer,Integer>(40, 40);
         this.nodeCircles = new HashMap<>();
-        networkNodesCords = new HashMap<>();
-        networkNodesCords.put(1, new Pair<>(320, 48)); //Top node1 cords
-        networkNodesCords.put(2, new Pair<>(512, 192)); //Middle right node2 cords
-        networkNodesCords.put(3, new Pair<>(448, 384)); //Bottom right node3 cords
-        networkNodesCords.put(4, new Pair<>(192, 384)); //Bottom left node4 cords
-        networkNodesCords.put(5, new Pair<>(128, 192)); //Middle left node5 cords
+        NodesCords = new HashMap<>();
+        NodesCords.put(-1, new Pair<>(40, 40));
+        NodesCords.put(1, new Pair<>(320, 48)); //Top node1 cords
+        NodesCords.put(2, new Pair<>(512, 192)); //Middle right node2 cords
+        NodesCords.put(3, new Pair<>(448, 384)); //Bottom right node3 cords
+        NodesCords.put(4, new Pair<>(192, 384)); //Bottom left node4 cords
+        NodesCords.put(5, new Pair<>(128, 192)); //Middle left node5 cords
         
     }
 
@@ -42,11 +43,11 @@ public class GraphicsWindow {
     }
 
     private Integer getNetNodePosX(Integer id) {
-        return networkNodesCords.get(id).getKey();
+        return NodesCords.get(id).getKey();
     }
 
     private Integer getNetNodePosY(Integer id) {
-        return networkNodesCords.get(id).getValue();
+        return NodesCords.get(id).getValue();
     }
 
     public void drawMessageCircle(Integer senderID, Integer reciverID, Double travelTime) {
